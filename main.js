@@ -75,7 +75,15 @@ const startServer = async () => {
                             res.writeHead(404, { 'Content-Type': 'text/plain' });
                             return res.end('Not Found in cache');
                         }
-                    }
+                }
+                else {
+                    res.writeHead(405, { 'Content-Type': 'text/plain' });
+                    return res.end('Method Not Allowed');
+                }
+            } catch (globalErr) {
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                return res.end('Internal Server Error');
+            }
         });
 
         server.listen(options.port, options.host, () => {
