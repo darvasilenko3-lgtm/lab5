@@ -54,6 +54,27 @@ const startServer = async () => {
                                 return res.end('Image not found on http.cat');
                             }
                         }
+                }
+                    else if (req.method === 'PUT') {
+                        const chunks = [];
+                        for await (const chunk of req) {
+                            chunks.push(chunk);
+                        }
+                        const bodyBuffer = Buffer.concat(chunks);
+
+                        await fs.writeFile(cacheFilePath, bodyBuffer);
+                        res.writeHead(201, { 'Content-Type': 'text/plain' });
+                        return res.end('Created');
+                }
+                    else if (req.method === 'DELETE') {
+                        try {
+                            await fs.unlink(cacheFilePath);
+                            res.writeHead(200, { 'Content-Type': 'text/plain' });
+                            return res.end('Deleted');
+                        } catch (err) {
+                            res.writeHead(404, { 'Content-Type': 'text/plain' });
+                            return res.end('Not Found in cache');
+                        }
                     }
         });
 
